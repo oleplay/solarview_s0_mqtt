@@ -8,15 +8,6 @@ from os import environ
 ##  this agent reads from the solarmax inverter socket and
 ## publishes the data to a mqtt broker
 
-
-inverter_ip = environ.get('INVERTER_IP')
-
-# 12345 should be the port of the inverter
-if environ.get('INVERTER_PORT'):
-    inverter_port = environ.get('INVERTER_PORT')
-else:
-    inverter_port = 12345
-
 s0_ip = environ.get('S0_IP')
 s0_port = environ.get('S0_PORT')
 
@@ -25,145 +16,14 @@ mqtt_broker_port = environ.get('MQTT_BROKER_PORT')
 mqtt_broker_auth = environ.get('MQTT_BROKER_AUTH')
 mqtt_inverter_topic = environ.get('MQTT_INVERTER_TOPIC')
 mqtt_s0_topic = environ.get('MQTT_S0_TOPIC')
-# PAC = "PAC" # AC power (W)
-# PD01 = "PD01" # DC Power String 1 (W)
-# PD02 = "PD02" # DC Power String 2 (W)
-# PDC = "PDC" # DC Power (W)
-# PDA = "PDA" # ????
-
-# QAC = "QAC" # ????
-# SAC = "SAC" # ????
-# TKK = "TKK" # ????
-# TNF = "TNF" # AC Freq (Hz)
-# TYP = "TYP" # Type
-# SWV = "SWV" # Software Version
-# CAC = "CAC" # Start ups
-
-# "DYR": "Year",
-# "DMT": "Month",
-# "DDY": "Day",
-# "THR": "Hour",
-# "TMI": "Minute",
-
-# "TYP": "Type",
-
-
-# KHR = "KHR" # poweronhours
-# KYR = "KYR" # Energy year (kwh)
-# KLY = "KLY" # energy Last year (kwh)
-# KMT = "KMT" # Energy month (kwh)
-# KLM = "KLM" # Energy last month (kwh)
-# KDY = "KDY" # Energy day (wh)
-# KLD = "KLD" # Energy yesterday (kwh)
-# KT0 = "KT0" # Energy Total (kwh)
-# PIN = "PIN" # Installed power (W)
-# ADR = "ADR" # Adress
-# PRL = "PRL" # relative Power % 
-# UDC = "UDC" # DC Voltage (mv)
-# UD01 = "UD01" # DC Voltage String 1 (mv)
-# UD02 = "UD02" # DC Voltage String 2 (mv)
-
-# UI1 = "UI1" # ????
-# UI2 = "UI2" # ????
-# UI3 = "UI3" # ????
-
-# UM1 = "UM1" # Uac 10m L1
-# UM2 = "UM2" # Uac 10m L2
-# UM3 = "UM3" # Uac 10m L3
-
-
-# UL1 = "UL1" # AC Voltage Phase 1
-# UL2 = "UL2" # AC Voltage Phase 2
-# UL3 = "UL3" # AC Voltage Phase 3
-# IDC = "IDC" # DC Current
-# ID01 = "ID01" # DC Current String 1
-# ID02 = "ID02" # DC Current String 2
-# IED = "IED" # Ierr DC Fehlerstrom
-# IEE = "IEE" # Ierr AC Fehlerstrom
-
-# IL1 = "IL1" # AC Current Phase 1
-# IL2 = "IL2" # AC Current Phase 2
-# IL3 = "IL3" # AC Current Phase 3
-# IML1 = "IML1" # Iac mean L1
-# IML2 = "IML2" # Iac mean L2
-# IML3 = "IML3" # Iac mean L3
-# PAM = "PAM" # ????
-# SAL = "SAL" # Alarm Codes
-# SYS = "SYS" # status code
-
 
 # Sys parameter
 
 status_codes = {
     20000: "Keine Kommunikation",
-    20001: "In Betrieb",
-    20002: "Zu wenig Einstrahlung",
-    20003: "Anfahren",
-    20004: "Betrieb auf MPP",
-    20005: "Ventilator laeuft",
-    20006: "Betrieb auf Maximalleistung",
-    20007: "Temperaturbegrenzung",
     20008: "Netzbetrieb",
 }
 
-
-# SAL parameter
-alarm_codes = { 
-    0: 'kein Fehler',
-    1: 'Externer Fehler 1',
-    2: 'Isolationsfehler DC-Seite',
-    4: 'Fehlerstrom Erde zu GroÃŸ',
-    8: 'Sicherungsbruch Mittelpunkterde',
-    16: 'Externer Alarm 2',
-    32: 'Langzeit-Temperaturbegrenzung',
-    64: 'Fehler AC-Einspeisung',
-    128: 'Externer Alarm 4',
-    256: 'Ventilator defekt',
-    512: 'Sicherungsbruch',
-    1024: 'Ausfall Temperatursensor',
-    2048: 'Alarm 12',
-    4096: 'Alarm 13',
-    8192: 'Alarm 14',
-    16384: 'Alarm 15',
-    32768: 'Alarm 16',
-    65536: 'Alarm 17'
-}
-
-# Max length of the message is 255 bytes
-# --> max. 28 Parameters
-field_map_inverter = {
-
-    "KDY": "Energy_Day (Wh)",
-    "KMT": "Energy_Month (kWh)",
-    "KYR": "Energy_Year (kWh)",
-    "KT0": "Energy_Total (kWh)",
-
-    "PDC": "DC_Power (W)",
-    "PD01": "DC_Power_String_1 (W)",
-    "PD02": "DC_Power_String_2 (W)",
-
-    "UD01": "DC_Voltage_String_1 (V)",
-    "UD02": "DC_Voltage_String_2 (V)",
-
-    "IDC": "DC_Current (A)",
-    "ID01": "DC_Current_String_1 (A)",
-    "ID02": "DC_Current_String_2 (A)",
-
-    "PAC": "AC_Power (W)",
-    "UL1": "AC_Voltage_Phase_1 (V)",
-    "UL2": "AC_Voltage_Phase_2 (V)",
-    "UL3": "AC_Voltage_Phase_3 (V)",
-
-    "IL1": "AC_Current_Phase_1 (A)",
-    "IL2": "AC_Current_Phase_2 (A)",
-    "IL3": "AC_Current_Phase_3 (A)",
-
-    "CAC": "Startups",
-    "KHR": "poweronhours",
-    "TKK": "inverter_operating_temp (°C)",
-    "SAL": "Alarm_Codes",
-    "SYS": "status_Code",
-}
 
 field_map_s0 = {
 
@@ -233,18 +93,8 @@ def map_data(f, v):
             return status_codes[v]
         else:
             return "Unknown Status Code"
-    elif f == "SAL":
-        if v in alarm_codes:
-            return alarm_codes[v]
-        else:
-            return "Unknown Alarm Code"
-    elif f == "PAC" or f == "PD01" or f == "PD02" or f == "PDC":
+    elif f == "PAC"
         return v/2
-    elif f == "UL1" or f == "UL2" or f == "UL3" or f == "UDC" or f == "UD01" or f == "UD02": 
-        return v/10.0
-    elif f == "IDC" or f == "ID01" or f == "ID02" or f == "IL1" or f == "IL2" or f == "IL3":
-        return v/100.0
-    
     else:
         return v
 
@@ -276,7 +126,7 @@ def connect_to_inverter(ip, port):
         s.connect((ip, port))
     except socket.error as e:
         print( 'Failed to create socket: Error code: ' + str(e))
-        pass
+        return
         # sys.exit()
     return s
 
@@ -299,18 +149,9 @@ def read_data(sock, request):
 
 def main():
     print ("starting...")
-    req_data_inverter = build_request(map=field_map_inverter) 
     req_data_s0 = build_request(map=field_map_s0)
     while True:
         try:
-            inv_s = connect_to_inverter(ip= inverter_ip, port= inverter_port)
-            print ("connected to inverter")
-            data = read_data(inv_s, req_data_inverter)
-            json_data = convert_to_json(map=field_map_inverter, data=data)
-            publish_message(topic=mqtt_inverter_topic, data=json_data, ip=mqtt_broker_ip, port=mqtt_broker_port, auth=mqtt_broker_auth)
-            inv_s.close()
-
-
             s0_s = connect_to_inverter(ip= s0_ip, port= s0_port)
             print ("connected to inverter")
             data = read_data(s0_s, req_data_s0)
