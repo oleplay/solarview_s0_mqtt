@@ -17,11 +17,14 @@ if environ.get('INVERTER_PORT'):
 else:
     inverter_port = 12345
 
+s0_ip = environ.get('S0_IP')
+s0_port = environ.get('S0_PORT')
+
 mqtt_broker_ip = environ.get('MQTT_BROKER_IP')
 mqtt_broker_port = environ.get('MQTT_BROKER_PORT')
 mqtt_broker_auth = environ.get('MQTT_BROKER_AUTH')
 mqtt_inverter_topic = environ.get('MQTT_INVERTER_TOPIC')
-
+mqtt_s0_topic = environ.get('MQTT_S0_TOPIC')
 # PAC = "PAC" # AC power (W)
 # PD01 = "PD01" # DC Power String 1 (W)
 # PD02 = "PD02" # DC Power String 2 (W)
@@ -150,7 +153,7 @@ field_map_inverter = {
     "UL1": "AC_Voltage_Phase_1 (V)",
     "UL2": "AC_Voltage_Phase_2 (V)",
     "UL3": "AC_Voltage_Phase_3 (V)",
-    
+
     "IL1": "AC_Current_Phase_1 (A)",
     "IL2": "AC_Current_Phase_2 (A)",
     "IL3": "AC_Current_Phase_3 (A)",
@@ -160,6 +163,29 @@ field_map_inverter = {
     "TKK": "inverter_operating_temp (°C)",
     "SAL": "Alarm_Codes",
     "SYS": "status_Code",
+}
+
+field_map_s0 = {
+
+    "KYR": "Energy_Year",
+    "KMT": "Energy_Month",
+    "KDY": "Energy_Day",
+    "KT0": "Energy_Total",
+
+    "PIN": "Installed_Power",
+
+    "PAC": "AC_Power",
+
+    "DYR": "Year",
+    "DMT": "Month",
+    "DDY": "Day",
+    "THR": "Hour",
+    "TMI": "Minute",
+
+    "TYP": "Type",
+
+    "SYS": "status_Code",
+    # TNF: "generated_frequency",
 }
 
 req_data = "{FB;01;!!|64:&&|$$$$}"
@@ -274,6 +300,7 @@ def read_data(sock, request):
 def main():
     print ("starting...")
     req_data_inverter = build_request(map=field_map_inverter) 
+    req_data_s0 = build_request(map=field_map_s0)
     while True:
         try:
             inv_s = connect_to_inverter(ip= inverter_ip, port= inverter_port)
@@ -283,6 +310,13 @@ def main():
             publish_message(topic=mqtt_inverter_topic, data=json_data, ip=mqtt_broker_ip, port=mqtt_broker_port, auth=mqtt_broker_auth)
             inv_s.close()
 
+
+            s0_s = connect_to_inverter(ip= s0_ip, port= s0_port)
+            print ("connected to inverter")
+            data = read_data(s0_s, req_data_s0)
+            json_data = convert_to_json(map=field_map_s0, data=data)
+            publish_message(topic=mqtt_s0_topic, data=json_data, ip=mqtt_broker_ip, port=mqtt_broker_port, auth=mqtt_broker_auth)
+            s0_s.close()
             time.sleep(10)
 
         except Exception as ex:
