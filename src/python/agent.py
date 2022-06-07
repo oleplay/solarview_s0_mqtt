@@ -80,7 +80,7 @@ def publish_message(topic, data, ip, port, auth):
     --- publishs to the """
     ## following line is for local broker
     # client.publish(topic, json.dumps(data))
-    publish.single(topic, payload=json.dumps(data), hostname=ip, port=port, auth=auth, client_id="Energymeter",)
+    publish.single(topic, payload=json.dumps(data), hostname=ip, port=port, auth=json.loads(auth), client_id="Energymeter",)
     print ('published: ' + json.dumps(data) + '\n' + 'to topic: ' + topic)
     return
 
@@ -126,7 +126,7 @@ def connect_to_inverter(ip, port):
         s.connect((ip, port))
     except socket.error as e:
         print( 'Failed to create socket: Error code: ' + str(e))
-        return
+        return False
         # sys.exit()
     return s
 
@@ -154,7 +154,12 @@ def main():
         try:
             s0_s = connect_to_inverter(ip= s0_ip, port= s0_port)
             print ("connected to inverter")
-            data = read_data(s0_s, req_data_s0)
+            if s0_s:
+                data = read_data(s0_s, req_data_s0)
+            else:
+                print ("failed to connect to inverter")
+                time.sleep(5)
+                continue
             json_data = convert_to_json(map=field_map_s0, data=data)
             publish_message(topic=mqtt_s0_topic, data=json_data, ip=mqtt_broker_ip, port=mqtt_broker_port, auth=mqtt_broker_auth)
             s0_s.close()
