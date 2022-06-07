@@ -9,10 +9,10 @@ from os import environ
 ## publishes the data to a mqtt broker
 
 s0_ip = environ.get('S0_IP')
-s0_port = environ.get('S0_PORT')
+s0_port = int(environ.get('S0_PORT'))
 
 mqtt_broker_ip = environ.get('MQTT_BROKER_IP')
-mqtt_broker_port = environ.get('MQTT_BROKER_PORT')
+mqtt_broker_port = int(environ.get('MQTT_BROKER_PORT'))
 mqtt_broker_auth = environ.get('MQTT_BROKER_AUTH')
 mqtt_inverter_topic = environ.get('MQTT_INVERTER_TOPIC')
 mqtt_s0_topic = environ.get('MQTT_S0_TOPIC')
