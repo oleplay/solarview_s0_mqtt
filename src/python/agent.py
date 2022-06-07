@@ -153,11 +153,11 @@ def main():
     while True:
         try:
             s0_s = connect_to_inverter(ip= s0_ip, port= s0_port)
-            print ("connected to inverter")
+            print ("connected to s0-fb")
             if s0_s:
                 data = read_data(s0_s, req_data_s0)
             else:
-                print ("failed to connect to inverter")
+                print ("failed to connect to s0-fb")
                 time.sleep(5)
                 continue
             json_data = convert_to_json(map=field_map_s0, data=data)
