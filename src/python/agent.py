@@ -93,7 +93,7 @@ def map_data(f, v):
             return status_codes[v]
         else:
             return "Unknown Status Code"
-    elif f == "PAC"
+    elif f == "PAC":
         return v/2
     else:
         return v
