@@ -15,6 +15,8 @@ s0_port = int(environ.get('S0_PORT'))
 mqtt_broker_ip = environ.get('MQTT_BROKER_IP')
 mqtt_broker_port = int(environ.get('MQTT_BROKER_PORT'))
 mqtt_broker_auth = environ.get('MQTT_BROKER_AUTH')
+if mqtt_broker_auth:
+    auth = json.loads(mqtt_broker_auth)
 mqtt_inverter_topic = environ.get('MQTT_INVERTER_TOPIC')
 mqtt_s0_topic = environ.get('MQTT_S0_TOPIC')
 
@@ -81,7 +83,8 @@ def publish_message(topic, data, ip, port, auth):
     --- publishs to the """
     ## following line is for local broker
     client = mqtt.Client(client_id="Energymeter")
-    client.username_pw_set(username=auth[0], password=auth[1])
+    if auth:
+        client.username_pw_set(username=auth["username"], password=auth["password"])
     client.connect(ip, port, 60)
     client.publish(topic, json.dumps(data))
     # client.publish(topic, json.dumps(data))
