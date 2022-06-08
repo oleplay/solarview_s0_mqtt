@@ -86,7 +86,7 @@ def publish_message(topic, data, ip, port, auth):
     if auth:
         client.username_pw_set(username=auth["username"], password=auth["password"])
     client.connect(ip, port, 60)
-    client.publish(topic, json.dumps(data))
+    client.publish(topic + "/full_status", json.dumps(data))
     # client.publish(topic, json.dumps(data))
     # publish.single(topic, payload=json.dumps(data), hostname=ip, port=port, auth=json.loads(auth), client_id="Energymeter",)
     for i in data:
