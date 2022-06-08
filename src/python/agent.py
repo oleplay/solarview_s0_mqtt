@@ -88,7 +88,7 @@ def publish_message(topic, data, ip, port, auth):
     # publish.single(topic, payload=json.dumps(data), hostname=ip, port=port, auth=json.loads(auth), client_id="Energymeter",)
     for i in data:
         # publish.single(topic+"/"+field_map_s0[i], payload=str(data[i]["Value"]), hostname=ip, port=port, auth=json.loads(auth), client_id="Energymeter",)
-        client.publish(topic+"/"+field_map_s0[i], data[i]["Value"])
+        client.publish(topic+"/"+(field_map_s0[i]+" ("+i+")"), data[i]["Value"])
     print ('published: ' + json.dumps(data) + '\n' + 'to topic: ' + topic)
     client.disconnect()
     return
