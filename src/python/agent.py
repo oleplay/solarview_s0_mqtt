@@ -1,5 +1,6 @@
 # coding=utf-8
 import paho.mqtt.publish as publish
+import paho.mqtt.client as mqtt
 import socket
 import time
 import json
@@ -79,11 +80,17 @@ def publish_message(topic, data, ip, port, auth):
     --- accepts a JSON payload
     --- publishs to the """
     ## following line is for local broker
+    client = mqtt.Client(client_id="Energymeter")
+    client.username_pw_set(username=auth[0], password=auth[1])
+    client.connect(ip, port, 60)
+    client.publish(topic, json.dumps(data))
     # client.publish(topic, json.dumps(data))
-    publish.single(topic, payload=json.dumps(data), hostname=ip, port=port, auth=json.loads(auth), client_id="Energymeter",)
+    # publish.single(topic, payload=json.dumps(data), hostname=ip, port=port, auth=json.loads(auth), client_id="Energymeter",)
     for i in data:
-        publish.single(topic+"/"+field_map_s0[i], payload=str(data[i]["Value"]), hostname=ip, port=port, auth=json.loads(auth), client_id="Energymeter",)
+        # publish.single(topic+"/"+field_map_s0[i], payload=str(data[i]["Value"]), hostname=ip, port=port, auth=json.loads(auth), client_id="Energymeter",)
+        client.publish(topic+"/"+field_map_s0[i], data[i]["Value"])
     print ('published: ' + json.dumps(data) + '\n' + 'to topic: ' + topic)
+    client.disconnect()
     return
 
 
