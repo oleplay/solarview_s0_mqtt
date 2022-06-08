@@ -81,6 +81,8 @@ def publish_message(topic, data, ip, port, auth):
     ## following line is for local broker
     # client.publish(topic, json.dumps(data))
     publish.single(topic, payload=json.dumps(data), hostname=ip, port=port, auth=json.loads(auth), client_id="Energymeter",)
+    for i in data:
+        publish.single(topic+"/"+field_map_s0[i], payload=str(data[i]["Value"]), hostname=ip, port=port, auth=json.loads(auth), client_id="Energymeter",)
     print ('published: ' + json.dumps(data) + '\n' + 'to topic: ' + topic)
     return
 
