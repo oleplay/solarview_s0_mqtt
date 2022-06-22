@@ -152,11 +152,15 @@ def read_data(sock, request):
     t1 = datetime.now()
     while not data_received or ((datetime.now() - t1).total_seconds() > 2):
         buf = sock.recv(1024)
-        print ('received: ' + str(buf))
         if len(buf) > 0:
+            print ('received: ' + str(buf))
             response = response + str(buf)
             data_received = True
-    print ('received: ' + response)
+        elif ((datetime.now() - t1).total_seconds() > 2):
+            print("No Data Received, Timeout")
+            break
+        else:
+            continue
     return response
 
 
