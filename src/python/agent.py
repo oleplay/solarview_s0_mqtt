@@ -182,12 +182,12 @@ def main():
                 data = read_data(s0_s, req_data_s0)
             else:
                 print ("failed to connect to s0-fb")
-                time.sleep(update_time)
+                time.sleep(10)
                 continue
             json_data = convert_to_json(map=field_map_s0, data=data)
             publish_message(topic=mqtt_s0_topic, data=json_data, ip=mqtt_broker_ip, port=mqtt_broker_port, auth=mqtt_broker_auth)
             s0_s.close()
-            time.sleep(10)
+            time.sleep(update_time)
 
         except Exception as ex:
             template = "An exception of type {0} occured. Arguments:\n{1!r}"
