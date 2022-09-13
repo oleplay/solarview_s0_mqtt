@@ -13,6 +13,12 @@ from os import environ
 s0_ip = environ.get('S0_IP')
 s0_port = int(environ.get('S0_PORT'))
 
+if environ.get("UPDATE_TIME"):
+    update_time = int(environ.get("UPDATE_TIME"))
+else:
+    update_time = 5
+
+
 mqtt_broker_ip = environ.get('MQTT_BROKER_IP')
 mqtt_broker_port = int(environ.get('MQTT_BROKER_PORT'))
 mqtt_broker_auth = environ.get('MQTT_BROKER_AUTH')
@@ -176,7 +182,7 @@ def main():
                 data = read_data(s0_s, req_data_s0)
             else:
                 print ("failed to connect to s0-fb")
-                time.sleep(5)
+                time.sleep(update_time)
                 continue
             json_data = convert_to_json(map=field_map_s0, data=data)
             publish_message(topic=mqtt_s0_topic, data=json_data, ip=mqtt_broker_ip, port=mqtt_broker_port, auth=mqtt_broker_auth)
